@@ -23,3 +23,15 @@ export type Form = {
   description?: string;
   properties: Record<string, FieldDefinition>;
 };
+
+export type RawEntity = {
+  id: string;
+  type: string;
+  [key: string]: unknown;
+};
+
+export type Entity = {
+  id: string;
+  type: string;
+  [key: string]: unknown;
+};

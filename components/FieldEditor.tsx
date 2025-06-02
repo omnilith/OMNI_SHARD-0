@@ -48,7 +48,7 @@ export default function FieldEditor({
       <label>
         Type:
         <select
-          value={localDef.type}
+          value={localDef.type || "string"}
           onChange={(e) =>
             update({ type: e.target.value as FieldDefinition["type"] })
           }

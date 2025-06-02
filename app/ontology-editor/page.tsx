@@ -2,6 +2,7 @@
 
 import FormList from "@/components/FormList";
 import FormEditor from "@/components/FormEditor";
+import { createEntity } from "@/core/actions";
 
 export default function page() {
   return (
@@ -10,7 +11,13 @@ export default function page() {
       <FormEditor
         onSave={(form) => {
           console.log("Create new Form:", form);
-          // validateAndPrepareEntity(form, formForm) + persist to DB
+          createEntity(form).then((result) => {
+            if (result.success) {
+              console.log("Form created successfully:", result.id);
+            } else {
+              console.error("Error creating form:", result.success);
+            }
+          });
         }}
       />
     </div>
