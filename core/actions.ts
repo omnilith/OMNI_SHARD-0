@@ -4,6 +4,7 @@ import { loadForm } from "./loadForm";
 import { validateAndPrepareEntity } from "./validateAndPrepareEntity";
 import { RawEntity } from "./types";
 import { insertEntity } from "./persistence/insertEntity";
+import { loadEntitiesByType } from "./persistence/loadEntity";
 
 export async function createEntity(entity: RawEntity) {
   if (typeof entity !== "object" || entity === null || !("id" in entity)) {
@@ -17,4 +18,14 @@ export async function createEntity(entity: RawEntity) {
   } else {
     throw new Error(result.error);
   }
+}
+
+export async function fetchEntitiesByType(type: string) {
+  if (typeof type !== "string" || type.trim() === "") {
+    throw new Error("Type must be a non-empty string");
+  }
+
+  const entities = await loadEntitiesByType(type);
+
+  return entities;
 }

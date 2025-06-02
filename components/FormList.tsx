@@ -1,8 +1,11 @@
 import { loadForms } from "@/core/loadForm";
-import { Form } from "@/core/types";
+import { Form, Entity } from "@/core/types";
+import { fetchEntitiesByType } from "@/core/actions";
 
-function FormList() {
+async function FormList() {
   const forms: Form[] = loadForms();
+  const forms2: Entity[] = await fetchEntitiesByType("Form");
+  console.log("Forms loaded:", forms2);
   return (
     <div>
       {forms.map((form) => (
