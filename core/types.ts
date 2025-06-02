@@ -13,6 +13,7 @@ export type FieldDefinition = {
   label?: string;
   description?: string;
   itemType?: FieldDefinition;
+  properties?: Record<string, FieldDefinition>; // if type === object
 };
 
 export type Form = {

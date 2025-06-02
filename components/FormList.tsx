@@ -1,8 +1,8 @@
 import { loadForms } from "@/core/loadForm";
 import { Form } from "@/core/types";
 
-async function FormList() {
-  const forms: Form[] = await loadForms();
+function FormList() {
+  const forms: Form[] = loadForms();
   return (
     <div>
       {forms.map((form) => (
