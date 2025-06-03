@@ -15,3 +15,10 @@ export const GET = async (req: Request) => {
   const entity = await loadEntitiesByType(type);
   return NextResponse.json(entity);
 };
+
+export async function POST(req: Request) {
+  const body = await req.json();
+  console.log("POST request received with body:", body);
+
+  return Response.json("Oh hi Ray");
+}

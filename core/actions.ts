@@ -1,31 +1,21 @@
-// "use server";
+"use server";
 
-// import { loadForm } from "./loadForm";
-// import { validateAndPrepareEntity } from "./validateAndPrepareEntity";
-// import { RawEntity } from "./types";
-// import { insertEntity } from "./persistence/insertEntity";
-// import { loadEntitiesByType } from "./persistence/loadEntity";
+import { Entity, Form } from "./types";
+import { loadEntityById } from "./persistence/loadEntity";
+import { validateAndPrepareEntity } from "./validateAndPrepareEntity";
+import { insertEntity } from "./persistence/insertEntity";
 
-// export async function createEntity(entity: RawEntity) {
-//   if (typeof entity !== "object" || entity === null || !("id" in entity)) {
-//     throw new Error("Entity must be an object with an 'id' property");
-//   }
-
-//   const form = await loadForm(entity.type as string);
-//   const result = validateAndPrepareEntity(entity, form);
-//   if (result.valid) {
-//     return await insertEntity(result.entity);
-//   } else {
-//     throw new Error(result.error);
-//   }
-// }
-
-// export async function fetchEntitiesByType(type: string) {
-//   if (typeof type !== "string" || type.trim() === "") {
-//     throw new Error("Type must be a non-empty string");
-//   }
-
-//   const entities = await loadEntitiesByType(type);
-
-//   return entities;
-// }
+export const createEntity = async (entity: Entity) => {
+  console.log("Creating entity:", entity);
+  const form = (await loadEntityById(`form-${entity.type}`)) as Form; //TODO:  Need to add Form type to DB
+  if (!form) {
+    throw new Error(`Form for entity type "${entity.type}" not found`);
+  }
+  const validationResult = validateAndPrepareEntity(entity, form);
+  if (!validationResult.valid) {
+    throw new Error(validationResult.error);
+  }
+  const preparedEntity = validationResult.entity;
+  const insertedEntity = await insertEntity(preparedEntity);
+  return insertedEntity;
+};

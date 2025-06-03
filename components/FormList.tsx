@@ -1,4 +1,3 @@
-// import { loadForms } from "@/core/loadForm";
 import { Form } from "@/core/types";
 
 async function FormList({ forms }: { forms: Form[] }) {
