@@ -9,7 +9,6 @@ const FormEditorWrapper: React.FC = () => {
       <h2>Form Editor</h2>
       <FormEditor
         onSave={(form) => {
-          console.log("Create new Form:", form);
           createEntity(form).then((result) => {
             if (result.success) {
               console.log("Form created successfully:", result.id);

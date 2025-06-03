@@ -14,9 +14,6 @@ export function validateAndPrepareEntity(
     type: raw.type,
   };
 
-  console.log("Raw entity:", raw);
-  console.log("Form definition:", form);
-
   for (const [key, field] of Object.entries(form.properties)) {
     const rawValue = raw[key];
 
