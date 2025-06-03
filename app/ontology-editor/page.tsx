@@ -1,25 +1,17 @@
-"use client";
-
 import FormList from "@/components/FormList";
-import FormEditor from "@/components/FormEditor";
-import { createEntity } from "@/core/actions";
+import FormEditorWrapper from "@/components/FormEditorWrapper";
+import { Form } from "@/core/types";
 
-export default function page() {
+export default async function page() {
+  console.log("Rendering Form Editor Page");
+  const data = await fetch("http://localhost:3000/api/entities?type=Form");
+  console.log("Fetched data:", data);
+  const forms: Form[] = await data.json();
+
   return (
     <div>
-      <FormList />
-      <FormEditor
-        onSave={(form) => {
-          console.log("Create new Form:", form);
-          createEntity(form).then((result) => {
-            if (result.success) {
-              console.log("Form created successfully:", result.id);
-            } else {
-              console.error("Error creating form:", result.success);
-            }
-          });
-        }}
-      />
+      <FormList forms={forms} />
+      <FormEditorWrapper />
     </div>
   );
 }
