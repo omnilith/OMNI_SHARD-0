@@ -1,37 +1,54 @@
 export type FieldDefinition = {
-  type:
-    | "string"
-    | "number"
-    | "boolean"
-    | "datetime"
-    | "reference"
-    | "list"
-    | "object";
+  label: string;
+  type: "string" | "number" | "boolean" | "list" | "object";
   required?: boolean;
-  refType?: string;
-  default?: unknown;
-  label?: string;
   description?: string;
-  itemType?: FieldDefinition;
-  properties?: Record<string, FieldDefinition>; // if type === object
+  listType?: "string" | "number" | "boolean" | "object";
 };
 
 export type Form = {
   id: string;
-  type: "Form";
+  type: string;
   label: string;
-  description?: string;
-  properties: Record<string, FieldDefinition>;
+  description: string;
+  properties: FieldDefinition[];
 };
 
-export type RawEntity = {
-  id: string;
-  type: string;
-  [key: string]: unknown;
-};
-
-export type Entity = {
-  id: string;
-  type: string;
-  [key: string]: unknown;
+export const formForm: Form = {
+  id: "form-Form",
+  type: "Form",
+  label: "Example Form",
+  description: "Main semantic container for a form",
+  properties: [
+    {
+      label: "ID",
+      type: "string",
+      required: true,
+      description: "ID of the form",
+    },
+    {
+      label: "Type",
+      type: "string",
+      required: true,
+      description: "Type of the form",
+    },
+    {
+      label: "Label",
+      type: "string",
+      required: true,
+      description: "label for the form",
+    },
+    {
+      label: "Description",
+      type: "string",
+      required: true,
+      description: "Description for the form",
+    },
+    {
+      label: "Properties",
+      type: "list",
+      required: false,
+      description: "Properties of the form",
+    },
+  ],
 };
