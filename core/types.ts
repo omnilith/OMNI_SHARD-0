@@ -7,9 +7,13 @@ export type FieldDefinition = {
   listType?: "string" | "number" | "boolean" | "object";
 };
 
-export type Form = {
+export type Entity = {
   id: string;
   type: string;
+  [key: string]: unknown;
+};
+
+export type Form = Entity & {
   label: string;
   description: string;
   properties: FieldDefinition[];
@@ -55,12 +59,13 @@ export const formForm: Form = {
       type: "list",
       required: false,
       description: "Properties of the form",
+      listType: "object",
     },
   ],
 };
 
-export type Entity = {
+export type DBEntity = {
   id: string;
   type: string;
-  [key: string]: unknown;
+  essence: Record<string, unknown>;
 };
