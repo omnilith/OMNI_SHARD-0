@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Form, FieldDefinition } from "@/core/types";
 import { createEntity } from "@/core/actions";
 import FieldEditor from "./FieldEditor";
+import styles from "./FormEditor.module.css";
 
 function FormEditor() {
   const [form, setForm] = useState<Form>({
@@ -43,9 +44,8 @@ function FormEditor() {
   };
 
   return (
-    <div>
-      {" "}
-      <div>
+    <div className={styles.formEditor}>
+      <div className={styles.formGrid}>
         <input
           placeholder="ID"
           value={form.id}
@@ -63,21 +63,27 @@ function FormEditor() {
         />
       </div>
       <FieldEditor field={field} setField={setField} />
-      <button onClick={handleAddField} type="button">
+      <button
+        onClick={handleAddField}
+        type="button"
+        className={styles.addFieldButton}
+      >
         Add Field
       </button>
       <div>
-        <h3>Fields</h3>
-        <ul>
+        <h3 className={styles.fieldsHeader}>Fields</h3>
+        <ul className={styles.fieldList}>
           {form.properties.map((f, idx) => (
-            <li key={idx}>
+            <li key={idx} className={styles.fieldListItem}>
               <span>{f.name}</span> ({f.type}){f.required ? " *" : ""} -{" "}
               {f.label}
             </li>
           ))}
         </ul>
       </div>
-      <button onClick={handleSubmit}>Save Form</button>
+      <button onClick={handleSubmit} className={styles.saveButton}>
+        Save Form
+      </button>
     </div>
   );
 }

@@ -1,0 +1,64 @@
+.formEditor {
+  max-width: 600px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.formGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.fieldList {
+  margin: 1.5rem 0;
+  padding: 0;
+  list-style: none;
+}
+
+.fieldListItem {
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #e0e0e0;
+  font-size: 0.97rem;
+}
+
+.saveButton {
+  background: #2563eb;
+  color: #fff;
+  border: none;
+  padding: 0.7rem 1.5rem;
+  border-radius: 4px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 1rem;
+  transition: background 0.2s;
+}
+.saveButton:hover {
+  background: #1d4ed8;
+}
+
+.addFieldButton {
+  background: #059669;
+  color: #fff;
+  border: none;
+  padding: 0.5rem 1.2rem;
+  border-radius: 4px;
+  font-weight: 500;
+  cursor: pointer;
+  margin-bottom: 1rem;
+  margin-top: 0.5rem;
+  transition: background 0.2s;
+}
+.addFieldButton:hover {
+  background: #047857;
+}
+
+.fieldsHeader {
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+  font-size: 1.1rem;
+}
