@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Form, FieldDefinition } from "@/core/types";
-// import { createEntity } from "@/core/actions";
+import { createEntity } from "@/core/actions";
 import FieldEditor from "./FieldEditor";
 
 function FormEditor() {
@@ -23,7 +23,7 @@ function FormEditor() {
   });
 
   const handleSubmit = () => {
-    // createEntity(form);
+    createEntity(form);
     console.log("Form submitted:", form);
   };
 
@@ -45,7 +45,7 @@ function FormEditor() {
   return (
     <div>
       {" "}
-      <div className="grid grid-cols-2 gap-4">
+      <div>
         <input
           placeholder="ID"
           value={form.id}
@@ -63,30 +63,21 @@ function FormEditor() {
         />
       </div>
       <FieldEditor field={field} setField={setField} />
-      <button
-        className="bg-green-600 text-white px-3 py-1 rounded mr-2"
-        onClick={handleAddField}
-        type="button"
-      >
+      <button onClick={handleAddField} type="button">
         Add Field
       </button>
-      <div className="my-4">
-        <h3 className="font-bold">Fields</h3>
+      <div>
+        <h3>Fields</h3>
         <ul>
           {form.properties.map((f, idx) => (
-            <li key={idx} className="border-b py-1 text-sm">
-              <span className="font-mono">{f.name}</span> ({f.type})
-              {f.required ? " *" : ""} - {f.label}
+            <li key={idx}>
+              <span>{f.name}</span> ({f.type}){f.required ? " *" : ""} -{" "}
+              {f.label}
             </li>
           ))}
         </ul>
       </div>
-      <button
-        className="bg-blue-600 text-white px-4 py-2 rounded"
-        onClick={handleSubmit}
-      >
-        Save Form
-      </button>
+      <button onClick={handleSubmit}>Save Form</button>
     </div>
   );
 }
