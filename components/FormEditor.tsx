@@ -1,48 +1,51 @@
 "use client";
 
 import { useState } from "react";
-import { FieldDefinition, Form } from "@/core/types";
+import { Form, FieldDefinition } from "@/core/types";
+import { createEntity } from "@/core/actions";
 import FieldEditor from "./FieldEditor";
+import styles from "./FormEditor.module.css";
 
-type FormEditorProps = {
-  initialForm?: Form;
-  onSave: (form: Form) => void;
-};
+function FormEditor() {
+  const [form, setForm] = useState<Form>({
+    id: "",
+    type: "Form",
+    label: "",
+    description: "",
+    properties: [],
+  });
 
-export default function FormEditor({ initialForm, onSave }: FormEditorProps) {
-  const [form, setForm] = useState<Form>(
-    initialForm || {
-      id: "",
-      type: "Form",
-      label: "",
-      description: "",
-      properties: {},
-    }
-  );
-
-  const updateField = (fieldKey: string, def: FieldDefinition) => {
-    setForm((prev) => ({
-      ...prev,
-      properties: {
-        ...prev.properties,
-        [fieldKey]: def,
-      },
-    }));
-  };
-
-  const removeField = (fieldKey: string) => {
-    const newProps = { ...form.properties };
-    delete newProps[fieldKey];
-    setForm((prev) => ({ ...prev, properties: newProps }));
-  };
+  const [field, setField] = useState<FieldDefinition>({
+    name: "",
+    label: "",
+    required: false,
+    description: "",
+    type: "string",
+  });
 
   const handleSubmit = () => {
-    onSave(form);
+    createEntity(form);
+    console.log("Form submitted:", form);
+  };
+
+  const handleAddField = () => {
+    if (!field.name) return; // Require a name for the field
+    setForm((prev) => ({
+      ...prev,
+      properties: [...prev.properties, field],
+    }));
+    setField({
+      name: "",
+      label: "",
+      required: false,
+      description: "",
+      type: "string",
+    });
   };
 
   return (
-    <div className="space-y-6">
-      <div className="grid grid-cols-2 gap-4">
+    <div className={styles.formEditor}>
+      <div className={styles.formGrid}>
         <input
           placeholder="ID"
           value={form.id}
@@ -59,33 +62,30 @@ export default function FormEditor({ initialForm, onSave }: FormEditorProps) {
           onChange={(e) => setForm({ ...form, description: e.target.value })}
         />
       </div>
-
-      <div className="border-t pt-4">
-        <h3 className="text-lg font-semibold mb-2">Fields</h3>
-        {Object.entries(form.properties).map(([key, def]) => (
-          <div key={key} className="border p-2 mb-2 rounded">
-            <FieldEditor
-              fieldKey={key}
-              definition={def}
-              onChange={(newDef) => updateField(key, newDef)}
-              onDelete={() => removeField(key)}
-            />
-          </div>
-        ))}
-        <button
-          className="bg-gray-200 px-3 py-1 rounded mt-2"
-          onClick={() => updateField(`field${Date.now()}`, { type: "string" })}
-        >
-          + Add Field
-        </button>
-      </div>
-
+      <FieldEditor field={field} setField={setField} />
       <button
-        className="bg-blue-600 text-white px-4 py-2 rounded"
-        onClick={handleSubmit}
+        onClick={handleAddField}
+        type="button"
+        className={styles.addFieldButton}
       >
+        Add Field
+      </button>
+      <div>
+        <h3 className={styles.fieldsHeader}>Fields</h3>
+        <ul className={styles.fieldList}>
+          {form.properties.map((f, idx) => (
+            <li key={idx} className={styles.fieldListItem}>
+              <span>{f.name}</span> ({f.type}){f.required ? " *" : ""} -{" "}
+              {f.label}
+            </li>
+          ))}
+        </ul>
+      </div>
+      <button onClick={handleSubmit} className={styles.saveButton}>
         Save Form
       </button>
     </div>
   );
 }
+
+export default FormEditor;

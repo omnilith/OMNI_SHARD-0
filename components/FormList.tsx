@@ -1,7 +1,6 @@
-// import { loadForms } from "@/core/loadForm";
 import { Form } from "@/core/types";
 
-function FormList({ forms }: { forms: Form[] }) {
+async function FormList({ forms }: { forms: Form[] }) {
   return (
     <div>
       {forms.map((form) => (

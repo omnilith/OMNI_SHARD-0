@@ -1,106 +1,61 @@
-import { FieldDefinition, Form, Entity, RawEntity } from "@/core/types";
-// import { forms } from "./data";
+import { Form, Entity } from "./types";
 
 type ValidationResult =
   | { valid: true; entity: Entity }
   | { valid: false; error: string };
 
 export function validateAndPrepareEntity(
-  raw: RawEntity,
+  entity: Entity,
   form: Form
 ): ValidationResult {
-  const result: Entity = {
-    id: raw.id,
-    type: raw.type,
-  };
-
-  console.log("Raw entity:", raw);
-  console.log("Form definition:", form);
-
-  for (const [key, field] of Object.entries(form.properties)) {
-    const rawValue = raw[key];
-
-    if (rawValue === undefined || rawValue === null) {
-      if (field.default !== undefined) {
-        result[key] = field.default;
-        continue;
-      } else if (field.required) {
-        return { valid: false, error: `Missing required field: "${key}"` };
-      } else {
-        continue;
-      }
-    }
-
-    const validation = validateValue(rawValue, field);
-    if (!validation.valid) {
-      return { valid: false, error: `Field "${key}": ${validation.error}` };
-    }
-
-    result[key] = validation.value;
+  //If the submitted entity is not an object or is null, throw an error
+  if (typeof entity !== "object" || entity === null) {
+    throw new Error("Entity must be a non-null object");
   }
 
-  return { valid: true, entity: result };
-}
+  //Loop through the form properties to validate the entity
+  for (const field of form.properties) {
+    //Get input value for the current field from the form
+    const inputValue = entity[field.name];
 
-function validateValue(
-  value: unknown,
-  field: FieldDefinition
-): { valid: true; value: unknown } | { valid: false; error: string } {
-  switch (field.type) {
-    case "string":
-      return typeof value === "string"
-        ? { valid: true, value }
-        : { valid: false, error: "Expected string" };
+    //If that field is required and not provided, return an error
+    if (field.required && (inputValue === undefined || inputValue === null)) {
+      return {
+        valid: false,
+        error: `Field "${field.name}" is required but not provided.`,
+      };
+    }
 
-    case "number":
-      return typeof value === "number"
-        ? { valid: true, value }
-        : { valid: false, error: "Expected number" };
-
-    case "boolean":
-      return typeof value === "boolean"
-        ? { valid: true, value }
-        : { valid: false, error: "Expected boolean" };
-
-    case "datetime":
-      return typeof value === "string" && !isNaN(Date.parse(value))
-        ? { valid: true, value: new Date(value).toISOString() }
-        : { valid: false, error: "Expected ISO datetime string" };
-
-    case "reference":
-      return typeof value === "string"
-        ? { valid: true, value }
-        : { valid: false, error: "Expected reference ID (string)" };
-
-    case "list":
-      if (!Array.isArray(value)) {
-        return { valid: false, error: "Expected array" };
+    //If the field type does not match the input value type, return an error
+    if (inputValue !== undefined && inputValue !== null) {
+      if (field.type === "string" && typeof inputValue !== "string") {
+        return {
+          valid: false,
+          error: `Field "${field.name}" must be a string.`,
+        };
+      } else if (field.type === "number" && typeof inputValue !== "number") {
+        return {
+          valid: false,
+          error: `Field "${field.name}" must be a number.`,
+        };
+      } else if (field.type === "boolean" && typeof inputValue !== "boolean") {
+        return {
+          valid: false,
+          error: `Field "${field.name}" must be a boolean.`,
+        };
+      } else if (field.type === "list" && !Array.isArray(inputValue)) {
+        return {
+          valid: false,
+          error: `Field "${field.name}" must be a list.`,
+        };
+      } else if (field.type === "object" && typeof inputValue !== "object") {
+        return {
+          valid: false,
+          error: `Field "${field.name}" must be an object.`,
+        };
       }
-      if (!field.itemType) {
-        return { valid: false, error: "Missing itemType for list" };
-      }
-      const validated = [];
-      for (let i = 0; i < value.length; i++) {
-        const item = validateValue(value[i], field.itemType);
-        if (!item.valid) {
-          return {
-            valid: false,
-            error: `Invalid item at index ${i}: ${item.error}`,
-          };
-        }
-        validated.push(item.value);
-      }
-      return { valid: true, value: validated };
-
-    case "object":
-      if (typeof value !== "object" || value === null || Array.isArray(value)) {
-        return { valid: false, error: "Expected structured object" };
-      }
-
-      // ✅ Just accept it as-is for now
-      return { valid: true, value };
-
-    default:
-      return { valid: false, error: `Unknown field type: ${field.type}` };
+    }
   }
+
+  return { valid: true, entity: entity as Entity };
 }

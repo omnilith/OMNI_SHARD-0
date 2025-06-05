@@ -1,31 +1,33 @@
 "use server";
 
-import { loadForm } from "./loadForm";
+import { Entity, DBEntity, Form } from "./types";
+import { loadEntityById } from "./persistence/loadEntity";
 import { validateAndPrepareEntity } from "./validateAndPrepareEntity";
-import { RawEntity } from "./types";
 import { insertEntity } from "./persistence/insertEntity";
-import { loadEntitiesByType } from "./persistence/loadEntity";
 
-export async function createEntity(entity: RawEntity) {
-  if (typeof entity !== "object" || entity === null || !("id" in entity)) {
-    throw new Error("Entity must be an object with an 'id' property");
+export const createEntity = async (entity: Entity) => {
+  console.log("Creating entity:", entity);
+  const loadedForm = await loadEntityById(`form-${entity.type}`); //TODO:  Need to add Form type to DB
+  if (!loadedForm) {
+    throw new Error(`Form for entity type "${entity.type}" not found`);
   }
+  const form = toAppEntity(loadedForm) as Form;
 
-  const form = await loadForm(entity.type as string);
-  const result = validateAndPrepareEntity(entity, form);
-  if (result.valid) {
-    return await insertEntity(result.entity);
-  } else {
-    throw new Error(result.error);
+  console.log("Loaded form for entity type:", form);
+  const validationResult = validateAndPrepareEntity(entity, form);
+  if (!validationResult.valid) {
+    throw new Error(validationResult.error);
   }
+  const preparedEntity = validationResult.entity;
+  const insertedEntity = await insertEntity(preparedEntity);
+  return insertedEntity;
+};
+
+function toAppEntity(dbRow: DBEntity): Entity {
+  return { id: dbRow.id, type: dbRow.type, ...dbRow.essence };
 }
 
-export async function fetchEntitiesByType(type: string) {
-  if (typeof type !== "string" || type.trim() === "") {
-    throw new Error("Type must be a non-empty string");
-  }
-
-  const entities = await loadEntitiesByType(type);
-
-  return entities;
-}
+// function toDbRow(appEntity) {
+//   const { id, type, ...data } = appEntity;
+//   return { id, type, data };
+// }
