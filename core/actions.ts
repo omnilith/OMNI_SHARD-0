@@ -6,14 +6,12 @@ import { validateAndPrepareEntity } from "./validateAndPrepareEntity";
 import { insertEntity } from "./persistence/insertEntity";
 
 export const createEntity = async (entity: Entity) => {
-  console.log("Creating entity:", entity);
   const loadedForm = await loadEntityById(`form-${entity.type}`); //TODO:  Need to add Form type to DB
   if (!loadedForm) {
     throw new Error(`Form for entity type "${entity.type}" not found`);
   }
   const form = toAppEntity(loadedForm) as Form;
 
-  console.log("Loaded form for entity type:", form);
   const validationResult = validateAndPrepareEntity(entity, form);
   if (!validationResult.valid) {
     throw new Error(validationResult.error);
