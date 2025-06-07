@@ -11,7 +11,7 @@ interface FieldEditorProps {
 function FieldEditor({ field, setField }: FieldEditorProps) {
   return (
     <div className={styles.fieldEditor}>
-      <div className={styles.fieldGroup}>
+      <div className={styles.fieldEditorFields}>
         <label>
           Type:
           <select
@@ -31,7 +31,7 @@ function FieldEditor({ field, setField }: FieldEditorProps) {
           </select>
         </label>
       </div>
-      <div className={styles.fieldGroup}>
+      <div>
         <label>
           Required:
           <input
@@ -46,7 +46,7 @@ function FieldEditor({ field, setField }: FieldEditorProps) {
           />
         </label>
       </div>
-      <div className={styles.fieldGroup}>
+      <div>
         <label>
           Name:
           <input
@@ -61,7 +61,7 @@ function FieldEditor({ field, setField }: FieldEditorProps) {
           />
         </label>
       </div>
-      <div className={styles.fieldGroup}>
+      <div>
         <label>
           Label:
           <input
@@ -76,7 +76,7 @@ function FieldEditor({ field, setField }: FieldEditorProps) {
           />
         </label>
       </div>
-      <div className={styles.fieldGroup}>
+      <div>
         <label>
           Description:
           <input

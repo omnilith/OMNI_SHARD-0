@@ -1,64 +1,127 @@
+/* Clean, modern, and responsive styles for FormEditor */
 .formEditor {
-  max-width: 600px;
-  margin: 2rem auto;
-  padding: 2rem;
-  background: #f9f9f9;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  background: var(--background);
+  color: var(--foreground);
+  border: 1px solid #e0e0e0;
+  border-radius: 1em;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  max-width: 480px;
+  width: 100%;
+  margin: 2em auto;
+  padding: 2em 2.5em;
+  display: flex;
+  flex-direction: column;
+  gap: 2em;
 }
 
-.formGrid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1rem;
-  margin-bottom: 1.5rem;
+.formFields {
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
 }
 
-.fieldList {
-  margin: 1.5rem 0;
-  padding: 0;
+.formFields input,
+.formFields textarea {
+  padding: 0.5em 0.8em;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1em;
+  background: #fafbfc;
+  color: var(--foreground);
+}
+
+.formFields input:focus,
+.formFields textarea:focus {
+  outline: 2px solid #2563eb;
+  border-color: #2563eb;
+}
+
+.fieldsSection {
+  background: var(--input-bg);
+  border: 1px solid var(--border);
+  border-radius: 0.7em;
+  padding: 1.2em 1em;
+  margin: 0 auto;
+  width: 100%;
+  max-width: 440px;
+  box-sizing: border-box;
+  color: var(--foreground);
+}
+
+.fieldsList {
   list-style: none;
+  padding: 0;
+  margin: 0;
 }
 
-.fieldListItem {
-  padding: 0.5rem 0;
-  border-bottom: 1px solid #e0e0e0;
-  font-size: 0.97rem;
+.fieldsItem {
+  padding: 0.5em 0;
+  border-bottom: 1px solid #eee;
+  font-size: 1em;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 0.7em;
 }
 
-.saveButton {
-  background: #2563eb;
-  color: #fff;
-  border: none;
-  padding: 0.7rem 1.5rem;
-  border-radius: 4px;
+.fieldsItem:last-child {
+  border-bottom: none;
+}
+
+.fieldsLabel {
   font-weight: 600;
-  cursor: pointer;
-  margin-top: 1rem;
-  transition: background 0.2s;
-}
-.saveButton:hover {
-  background: #1d4ed8;
+  font-size: 1.05em;
 }
 
-.addFieldButton {
-  background: #059669;
+.fieldsType {
+  color: #2563eb;
+  font-weight: 400;
+  margin-left: 8px;
+  font-size: 0.95em;
+}
+
+.fieldsRequired {
+  color: #e11d48;
+  margin-left: 4px;
+}
+
+.fieldsName {
+  color: #666;
+  font-size: 0.97em;
+  font-family: monospace;
+}
+
+.fieldsDescription {
+  margin-left: 8px;
+  color: #888;
+  font-size: 0.97em;
+}
+
+.button {
+  background-color: #2563eb;
   color: #fff;
   border: none;
-  padding: 0.5rem 1.2rem;
   border-radius: 4px;
-  font-weight: 500;
+  padding: 0.5em 1.2em;
+  font-size: 1em;
   cursor: pointer;
-  margin-bottom: 1rem;
-  margin-top: 0.5rem;
   transition: background 0.2s;
-}
-.addFieldButton:hover {
-  background: #047857;
+  margin-top: 1em;
 }
 
-.fieldsHeader {
-  font-weight: bold;
-  margin-bottom: 0.5rem;
-  font-size: 1.1rem;
+.button:hover {
+  background-color: #1d4ed8;
+}
+
+.buttonContainer {
+  display: flex;
+  justify-content: center;
+  margin-top: 1em;
+}
+
+@media (max-width: 600px) {
+  .formEditor,
+  .fieldsSection {
+    max-width: 98vw;
+    padding: 1em;
+  }
 }
