@@ -11,7 +11,7 @@ interface FieldEditorProps {
 function FieldEditor({ field, setField }: FieldEditorProps) {
   return (
     <div className={styles.fieldEditor}>
-      <div>
+      <div className={styles.fieldEditorFields}>
         <label>
           Type:
           <select

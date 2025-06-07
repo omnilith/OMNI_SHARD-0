@@ -45,7 +45,8 @@ function FormEditor() {
 
   return (
     <div className={styles.formEditor}>
-      <div>
+      <div className={styles.formFields}>
+        <h2>Form Details</h2>
         <input
           placeholder="ID"
           value={form.id}
@@ -63,21 +64,48 @@ function FormEditor() {
         />
       </div>
       <FieldEditor field={field} setField={setField} />
-      <button onClick={handleAddField} type="button">
+      <button className={styles.button} onClick={handleAddField} type="button">
         Add Field
       </button>
-      <div>
-        <h3>Fields</h3>
-        <ul>
-          {form.properties.map((f, idx) => (
-            <li key={idx}>
-              <span>{f.name}</span> ({f.type}){f.required ? " *" : ""} -{" "}
-              {f.label}
-            </li>
-          ))}
-        </ul>
+      <div className={styles.fieldsSection}>
+        <h2>Fields</h2>
+        {form.properties.length === 0 ? (
+          <div
+            style={{
+              color: "#888",
+              fontStyle: "italic",
+              padding: "0.5em 0",
+            }}
+          >
+            No fields added yet.
+          </div>
+        ) : (
+          <ul className={styles.fieldsList}>
+            {form.properties.map((f, idx) => (
+              <li key={idx} className={styles.fieldsItem}>
+                <div className={styles.fieldsLabel}>
+                  {f.label || <span style={{ color: "#888" }}>(No label)</span>}
+                  {f.required && (
+                    <span className={styles.fieldsRequired}>*</span>
+                  )}
+                  <span className={styles.fieldsType}>[{f.type}]</span>
+                </div>
+                <div>
+                  <span className={styles.fieldsName}>{f.name}</span>
+                  {f.description && (
+                    <span className={styles.fieldsDescription}>
+                      – {f.description}
+                    </span>
+                  )}
+                </div>
+              </li>
+            ))}
+          </ul>
+        )}
       </div>
-      <button onClick={handleSubmit}>Save Form</button>
+      <button className={styles.button} onClick={handleSubmit}>
+        Save Form
+      </button>
     </div>
   );
 }

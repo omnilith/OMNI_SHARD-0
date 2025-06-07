@@ -1,3 +1,57 @@
+/* Clean, modern, and responsive styles for FieldEditor */
 .fieldEditor {
-  border: solid;
+  background: var(--background);
+  color: var(--foreground);
+  border: 1px solid var(--border);
+  border-radius: 0.7em;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.03);
+  padding: 1.5em 1em;
+  margin: 1em 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5em;
+  max-width: 440px;
+  width: 100%;
+}
+
+.fieldGroup {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 180px;
+  min-width: 140px;
+  gap: 0.3em;
+}
+
+.fieldGroup label {
+  font-size: 0.97em;
+  font-weight: 500;
+  margin-bottom: 0.2em;
+}
+
+.fieldGroup input,
+.fieldGroup select {
+  padding: 0.4em 0.7em;
+  border: 1px solid var(--input-border);
+  border-radius: 4px;
+  font-size: 1em;
+  background: var(--input-bg);
+  color: var(--foreground);
+}
+
+.fieldGroup input[type="checkbox"] {
+  width: 1.1em;
+  height: 1.1em;
+  margin-top: 0.3em;
+}
+
+@media (max-width: 600px) {
+  .fieldEditor {
+    max-width: 98vw;
+    padding: 1em;
+    flex-direction: column;
+    gap: 1em;
+  }
+  .fieldGroup {
+    min-width: 100px;
+  }
 }
