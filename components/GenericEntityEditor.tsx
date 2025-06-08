@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Form, Entity, FieldDefinition } from "@/core/types";
 import { createEntity } from "@/core/actions";
 import { toast } from "react-hot-toast";
-import { useEntitiesByType } from "./useEntitiesByType";
+import { useEntitiesByType } from "../hooks/useEntitiesByType";
 
 // Helper to get initial values for the entity
 function getInitialEntity(
