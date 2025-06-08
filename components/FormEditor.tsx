@@ -105,6 +105,19 @@ function FormEditor({ initialForm }: FormEditorProps) {
                     <span className={styles.fieldsRequired}>*</span>
                   )}
                   <span className={styles.fieldsType}>[{f.type}]</span>
+                  <button
+                    type="button"
+                    className={styles.removeFieldButton}
+                    onClick={() =>
+                      setForm((prev) => ({
+                        ...prev,
+                        properties: prev.properties.filter((_, i) => i !== idx),
+                      }))
+                    }
+                    aria-label="Remove field"
+                  >
+                    Remove
+                  </button>
                 </div>
                 <div>
                   <span className={styles.fieldsName}>{f.name}</span>
