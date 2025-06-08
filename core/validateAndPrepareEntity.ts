@@ -19,7 +19,10 @@ export function validateAndPrepareEntity(
     const inputValue = entity[field.name];
 
     //If that field is required and not provided, return an error
-    if (field.required && (inputValue === undefined || inputValue === null)) {
+    if (
+      field.required &&
+      (inputValue === undefined || inputValue === null || inputValue === "")
+    ) {
       return {
         valid: false,
         error: `Field "${field.name}" is required but not provided.`,

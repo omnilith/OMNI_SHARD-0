@@ -13,7 +13,7 @@ function FieldEditor({ field, setField }: FieldEditorProps) {
     <div className={styles.fieldEditor}>
       <div className={styles.fieldEditorFields}>
         <label>
-          Type:
+          Type: {""}
           <select
             value={field.type}
             onChange={(e) =>

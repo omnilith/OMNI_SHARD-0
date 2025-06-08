@@ -5,6 +5,7 @@ import { Form, FieldDefinition } from "@/core/types";
 import { createEntity } from "@/core/actions";
 import FieldEditor from "./FieldEditor";
 import styles from "./FormEditor.module.css";
+import { toast } from "react-hot-toast";
 
 function FormEditor() {
   const [form, setForm] = useState<Form>({
@@ -23,13 +24,18 @@ function FormEditor() {
     type: "string",
   });
 
-  const handleSubmit = () => {
-    createEntity(form);
-    console.log("Form submitted:", form);
+  const handleSubmit = async () => {
+    try {
+      await createEntity(form);
+      toast.success("Form saved successfully!");
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (e) {
+      toast.error("Failed to save form.");
+    }
   };
 
   const handleAddField = () => {
-    if (!field.name) return; // Require a name for the field
+    if (!field.name) return;
     setForm((prev) => ({
       ...prev,
       properties: [...prev.properties, field],
