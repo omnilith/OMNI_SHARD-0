@@ -1,7 +1,7 @@
 "use server";
 
 import { Entity, DBEntity, Form } from "./types";
-import { loadEntityById } from "./persistence/loadEntity";
+import { loadEntityById, loadEntitiesByType } from "./persistence/loadEntity";
 import { validateAndPrepareEntity } from "./validateAndPrepareEntity";
 import { insertEntity } from "./persistence/insertEntity";
 
@@ -27,6 +27,11 @@ export const getEntityById = async (id: string): Promise<Entity | null> => {
     return null;
   }
   return toAppEntity(dbRow);
+};
+
+export const getEntitiesByType = async (type: string): Promise<Entity[]> => {
+  const dbRows = await loadEntitiesByType(type);
+  return dbRows.map(toAppEntity);
 };
 
 function toAppEntity(dbRow: DBEntity): Entity {

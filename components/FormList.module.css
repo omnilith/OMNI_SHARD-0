@@ -1,0 +1,36 @@
+.formListContainer {
+  max-width: 600px;
+  margin: 2em auto;
+  padding: 1.5em;
+  background: var(--background);
+  border: 1px solid var(--border);
+  border-radius: 1em;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.formItem {
+  padding: 1em 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.formItem:last-child {
+  border-bottom: none;
+}
+
+.formLabel {
+  font-size: 1.2em;
+  font-weight: 600;
+  color: var(--primary);
+  margin-bottom: 0.2em;
+}
+
+.formDescription {
+  color: var(--foreground);
+  margin-bottom: 0.2em;
+}
+
+.formId {
+  color: #888;
+  font-size: 0.97em;
+  font-family: monospace;
+}

@@ -1,7 +1,7 @@
-import { Entity, DBEntity } from "../types";
+import { DBEntity } from "../types";
 import { query } from "./db";
 
-export async function loadEntitiesByType(type: string): Promise<Entity[]> {
+export async function loadEntitiesByType(type: string): Promise<DBEntity[]> {
   const rows = await query(`SELECT * FROM entity WHERE type = $1`, [type]);
   return rows;
 }
