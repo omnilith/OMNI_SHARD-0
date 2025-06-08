@@ -6,12 +6,15 @@ import { createEntity } from "@/core/actions";
 import FieldEditor from "./FieldEditor";
 import styles from "./FormEditor.module.css";
 import { toast } from "react-hot-toast";
+import { useRouter } from "next/navigation";
 
 interface FormEditorProps {
   initialForm?: Form;
 }
 
 function FormEditor({ initialForm }: FormEditorProps) {
+  const router = useRouter();
+
   const [form, setForm] = useState<Form>(
     initialForm || {
       id: "",
@@ -34,6 +37,7 @@ function FormEditor({ initialForm }: FormEditorProps) {
     try {
       await createEntity(form);
       toast.success("Form saved successfully!");
+      router.push(`/ontology-editor/${form.id}`);
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (e) {
       toast.error("Failed to save form.");
