@@ -4,6 +4,7 @@ import { Entity, DBEntity, Form } from "./types";
 import { loadEntityById, loadEntitiesByType } from "./persistence/loadEntity";
 import { validateAndPrepareEntity } from "./validateAndPrepareEntity";
 import { insertEntity } from "./persistence/insertEntity";
+import { deleteEntity } from "./persistence/deleteEntity";
 
 export const createEntity = async (entity: Entity) => {
   const loadedForm = await loadEntityById(`form-${entity.type}`); //TODO:  Need to add Form type to DB
@@ -32,6 +33,12 @@ export const getEntityById = async (id: string): Promise<Entity | null> => {
 export const getEntitiesByType = async (type: string): Promise<Entity[]> => {
   const dbRows = await loadEntitiesByType(type);
   return dbRows.map(toAppEntity);
+};
+
+export const deleteEntityById = async (
+  id: string
+): Promise<{ success: boolean }> => {
+  return await deleteEntity(id);
 };
 
 function toAppEntity(dbRow: DBEntity): Entity {
