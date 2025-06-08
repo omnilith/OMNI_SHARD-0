@@ -1,7 +1,13 @@
 import { FieldDefinition } from "@/core/types";
 import styles from "./FieldEditor.module.css";
 
-const FIELD_TYPES = ["string", "number", "boolean", "relation"] as const;
+const FIELD_TYPES = [
+  "string",
+  "number",
+  "boolean",
+  "relation",
+  "datetime",
+] as const;
 
 interface FieldEditorProps {
   field: FieldDefinition;

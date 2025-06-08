@@ -1,10 +1,23 @@
 export type FieldDefinition = {
   name: string;
   label: string;
-  type: "string" | "number" | "boolean" | "list" | "object" | "relation";
+  type:
+    | "string"
+    | "number"
+    | "boolean"
+    | "list"
+    | "object"
+    | "relation"
+    | "datetime";
   required?: boolean;
   description?: string;
-  listType?: "string" | "number" | "boolean" | "object" | "relation";
+  listType?:
+    | "string"
+    | "number"
+    | "boolean"
+    | "object"
+    | "relation"
+    | "datetime";
   // For relation type:
   relationType?: string; // The entity type this field relates to (e.g., "User", "Form", etc.)
   relationLabelField?: string; // Optional: which field to use as the display label for the related entity

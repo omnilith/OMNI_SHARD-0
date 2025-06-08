@@ -81,6 +81,13 @@ export function validateAndPrepareEntity(
             };
           }
         }
+      } else if (field.type === "datetime") {
+        if (typeof inputValue !== "string") {
+          return {
+            valid: false,
+            error: `Field "${field.name}" must be a datetime string (ISO format).`,
+          };
+        }
       }
     }
   }

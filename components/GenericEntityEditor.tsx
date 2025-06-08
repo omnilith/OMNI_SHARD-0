@@ -228,6 +228,15 @@ function GenericEntityEditor({ form, entity, type }: GenericEntityEditorProps) {
                   ))}
                 </select>
               ))}
+            {field.type === "datetime" && (
+              <input
+                type="datetime-local"
+                value={val ? (typeof val === "string" ? val : "") : ""}
+                onChange={(e) => handleChange(field, e.target.value)}
+                required={field.required}
+                placeholder={field.description || "Select date and time"}
+              />
+            )}
             {field.description && (
               <span style={{ color: "#888", fontSize: "0.97em" }}>
                 {field.description}
