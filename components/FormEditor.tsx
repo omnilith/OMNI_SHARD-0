@@ -7,14 +7,20 @@ import FieldEditor from "./FieldEditor";
 import styles from "./FormEditor.module.css";
 import { toast } from "react-hot-toast";
 
-function FormEditor() {
-  const [form, setForm] = useState<Form>({
-    id: "",
-    type: "Form",
-    label: "",
-    description: "",
-    properties: [],
-  });
+interface FormEditorProps {
+  initialForm?: Form;
+}
+
+function FormEditor({ initialForm }: FormEditorProps) {
+  const [form, setForm] = useState<Form>(
+    initialForm || {
+      id: "",
+      type: "Form",
+      label: "",
+      description: "",
+      properties: [],
+    }
+  );
 
   const [field, setField] = useState<FieldDefinition>({
     name: "",

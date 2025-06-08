@@ -21,6 +21,14 @@ export const createEntity = async (entity: Entity) => {
   return insertedEntity;
 };
 
+export const getEntityById = async (id: string): Promise<Entity | null> => {
+  const dbRow = await loadEntityById(id);
+  if (!dbRow) {
+    return null;
+  }
+  return toAppEntity(dbRow);
+};
+
 function toAppEntity(dbRow: DBEntity): Entity {
   return { id: dbRow.id, type: dbRow.type, ...dbRow.essence };
 }
