@@ -8,6 +8,7 @@ import { deleteEntity } from "./persistence/deleteEntity";
 
 export const createEntity = async (entity: Entity) => {
   const loadedForm = await loadEntityById(`form-${entity.type}`); //TODO:  Need to add Form type to DB
+  console.log("Loaded form for entity type:", entity);
   if (!loadedForm) {
     throw new Error(`Form for entity type "${entity.type}" not found`);
   }
@@ -23,6 +24,7 @@ export const createEntity = async (entity: Entity) => {
 };
 
 export const getEntityById = async (id: string): Promise<Entity | null> => {
+  console.log("getEntityById called with id:", id);
   const dbRow = await loadEntityById(id);
   if (!dbRow) {
     return null;
