@@ -1,6 +1,7 @@
 import { getEntitiesByType } from "@/core/actions";
 import { Form } from "@/core/types";
 import styles from "./FormList.module.css";
+import { deleteEntityById } from "@/core/actions";
 
 async function FormList() {
   const forms = (await getEntitiesByType("Form")) as Form[];
@@ -12,9 +13,24 @@ async function FormList() {
     <div className={styles.formListContainer}>
       {forms.map((form) => (
         <div key={form.id} className={styles.formItem}>
-          <h2 className={styles.formLabel}>{form.label}</h2>
-          <p className={styles.formDescription}>{form.description}</p>
-          <p className={styles.formId}>{form.id}</p>
+          <div className={styles.formRow}>
+            <div className={styles.formInfo}>
+              <h2 className={styles.formLabel}>{form.label}</h2>
+              <p className={styles.formDescription}>{form.description}</p>
+              <p className={styles.formId}>{form.id}</p>
+            </div>
+            <form
+              action={async () => {
+                "use server";
+                await deleteEntityById(form.id);
+              }}
+              className={styles.deleteForm}
+            >
+              <button type="submit" className={styles.deleteButton}>
+                Delete
+              </button>
+            </form>
+          </div>
         </div>
       ))}
     </div>
