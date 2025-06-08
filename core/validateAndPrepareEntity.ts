@@ -51,11 +51,36 @@ export function validateAndPrepareEntity(
           valid: false,
           error: `Field "${field.name}" must be a list.`,
         };
-      } else if (field.type === "object" && typeof inputValue !== "object") {
+      } else if (
+        field.type === "object" &&
+        (typeof inputValue !== "object" ||
+          Array.isArray(inputValue) ||
+          inputValue === null)
+      ) {
         return {
           valid: false,
           error: `Field "${field.name}" must be an object.`,
         };
+      } else if (field.type === "relation") {
+        // relationMultiple means value should be array, otherwise string (id)
+        if (field.relationMultiple) {
+          if (
+            !Array.isArray(inputValue) ||
+            inputValue.some((v) => typeof v !== "string")
+          ) {
+            return {
+              valid: false,
+              error: `Field "${field.name}" must be an array of IDs (strings).`,
+            };
+          }
+        } else {
+          if (typeof inputValue !== "string") {
+            return {
+              valid: false,
+              error: `Field "${field.name}" must be a string (ID).`,
+            };
+          }
+        }
       }
     }
   }

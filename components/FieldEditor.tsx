@@ -1,7 +1,7 @@
 import { FieldDefinition } from "@/core/types";
 import styles from "./FieldEditor.module.css";
 
-const FIELD_TYPES = ["string", "number", "boolean"] as const;
+const FIELD_TYPES = ["string", "number", "boolean", "relation"] as const;
 
 interface FieldEditorProps {
   field: FieldDefinition;
@@ -20,6 +20,14 @@ function FieldEditor({ field, setField }: FieldEditorProps) {
               setField((prev) => ({
                 ...prev,
                 type: e.target.value as FieldDefinition["type"],
+                // Reset relation fields if not relation type
+                ...(e.target.value === "relation"
+                  ? {}
+                  : {
+                      relationType: undefined,
+                      relationLabelField: undefined,
+                      relationMultiple: undefined,
+                    }),
               }))
             }
           >
@@ -31,6 +39,48 @@ function FieldEditor({ field, setField }: FieldEditorProps) {
           </select>
         </label>
       </div>
+      {field.type === "relation" && (
+        <div className={styles.fieldEditorFields}>
+          <label>
+            Relation Type:
+            <input
+              type="text"
+              value={field.relationType || ""}
+              onChange={(e) =>
+                setField((prev) => ({ ...prev, relationType: e.target.value }))
+              }
+              placeholder="e.g. User, Form, etc."
+            />
+          </label>
+          <label>
+            Relation Label Field:
+            <input
+              type="text"
+              value={field.relationLabelField || ""}
+              onChange={(e) =>
+                setField((prev) => ({
+                  ...prev,
+                  relationLabelField: e.target.value,
+                }))
+              }
+              placeholder="e.g. name, label"
+            />
+          </label>
+          <label>
+            Allow Multiple:
+            <input
+              type="checkbox"
+              checked={!!field.relationMultiple}
+              onChange={(e) =>
+                setField((prev) => ({
+                  ...prev,
+                  relationMultiple: e.target.checked,
+                }))
+              }
+            />
+          </label>
+        </div>
+      )}
       <div>
         <label>
           Required:

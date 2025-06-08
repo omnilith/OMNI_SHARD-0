@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Form, Entity, FieldDefinition } from "@/core/types";
 import { createEntity } from "@/core/actions";
 import { toast } from "react-hot-toast";
+import { useEntitiesByType } from "./useEntitiesByType";
 
 // Helper to get initial values for the entity
 function getInitialEntity(
@@ -49,6 +50,19 @@ function GenericEntityEditor({ form, entity, type }: GenericEntityEditorProps) {
   );
   const [saving, setSaving] = useState(false);
 
+  // Prepare hooks for all relation fields
+  const relationFields = form.properties.filter(
+    (f) => f.type === "relation" && f.relationType
+  );
+  // Map field name to { entities, loading }
+  const relationData: Record<string, { entities: Entity[]; loading: boolean }> =
+    {};
+  relationFields.forEach((field) => {
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    const { entities, loading } = useEntitiesByType(field.relationType);
+    relationData[field.name] = { entities, loading };
+  });
+
   const handleChange = (field: FieldDefinition, value: unknown) => {
     setValues((prev) => ({ ...prev, [field.name]: value }));
   };
@@ -66,6 +80,14 @@ function GenericEntityEditor({ form, entity, type }: GenericEntityEditorProps) {
     }
   };
 
+  // Helper to get label for an entity
+  const getEntityLabel = (entity: Entity, field: FieldDefinition) => {
+    if (field.relationLabelField && entity[field.relationLabelField]) {
+      return String(entity[field.relationLabelField]);
+    }
+    return entity.id;
+  };
+
   return (
     <form
       onSubmit={handleSave}
@@ -80,6 +102,9 @@ function GenericEntityEditor({ form, entity, type }: GenericEntityEditorProps) {
       <p style={{ color: "#888", marginBottom: 8 }}>{form.description}</p>
       {form.properties.map((field) => {
         const val = values[field.name];
+        // For relation fields, get options from relationData
+        const rel =
+          field.type === "relation" ? relationData[field.name] : undefined;
         return (
           <div
             key={field.name}
@@ -155,6 +180,54 @@ function GenericEntityEditor({ form, entity, type }: GenericEntityEditorProps) {
                 placeholder={field.description || "JSON object"}
               />
             )}
+            {field.type === "relation" &&
+              (field.relationMultiple ? (
+                rel?.loading ? (
+                  <span>Loading...</span>
+                ) : (
+                  <select
+                    multiple
+                    value={Array.isArray(val) ? val : []}
+                    onChange={(e) => {
+                      const selected = Array.from(e.target.selectedOptions).map(
+                        (opt) => opt.value
+                      );
+                      handleChange(field, selected);
+                    }}
+                    required={field.required}
+                  >
+                    <option value="" disabled>
+                      {rel?.entities.length === 0
+                        ? "No options available"
+                        : `Select ${field.relationType || "entities"}`}
+                    </option>
+                    {rel?.entities.map((ent) => (
+                      <option key={ent.id} value={ent.id}>
+                        {getEntityLabel(ent, field)}
+                      </option>
+                    ))}
+                  </select>
+                )
+              ) : rel?.loading ? (
+                <span>Loading...</span>
+              ) : (
+                <select
+                  value={typeof val === "string" ? val : ""}
+                  onChange={(e) => handleChange(field, e.target.value)}
+                  required={field.required}
+                >
+                  <option value="">
+                    {rel?.entities.length === 0
+                      ? "No options available"
+                      : `Select ${field.relationType || "entity"}`}
+                  </option>
+                  {rel?.entities.map((ent) => (
+                    <option key={ent.id} value={ent.id}>
+                      {getEntityLabel(ent, field)}
+                    </option>
+                  ))}
+                </select>
+              ))}
             {field.description && (
               <span style={{ color: "#888", fontSize: "0.97em" }}>
                 {field.description}

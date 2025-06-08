@@ -14,7 +14,6 @@ async function page({ params }: PageProps) {
   const { type } = await params;
   const capitalizedType = capitalizeFirstLetter(type);
   const form = (await getEntityById("form-" + capitalizedType)) as Form;
-  console.log("Entity type:", form);
   return (
     <div>
       <GenericEntityEditor form={form} type={capitalizedType} />
