@@ -2,6 +2,7 @@ import { getEntitiesByType } from "@/core/actions";
 import { Form } from "@/core/types";
 import styles from "./FormList.module.css";
 import { deleteEntityById } from "@/core/actions";
+import Link from "next/link";
 
 async function FormList() {
   const forms = (await getEntitiesByType("Form")) as Form[];
@@ -15,7 +16,14 @@ async function FormList() {
         <div key={form.id} className={styles.formItem}>
           <div className={styles.formRow}>
             <div className={styles.formInfo}>
-              <h2 className={styles.formLabel}>{form.label}</h2>
+              <h2 className={styles.formLabel}>
+                <Link
+                  href={`/ontology-editor/${form.id}`}
+                  className={styles.formLabelLink}
+                >
+                  {form.label}
+                </Link>
+              </h2>
               <p className={styles.formDescription}>{form.description}</p>
               <p className={styles.formId}>{form.id}</p>
             </div>
