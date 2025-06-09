@@ -9,6 +9,7 @@ const FIELD_TYPES = [
   "relation",
   "datetime",
   "enum",
+  "list",
 ] as const;
 
 interface FieldEditorProps {
@@ -130,6 +131,37 @@ function FieldEditor({ field, setField }: FieldEditorProps) {
                 }))
               }
             />
+          </label>
+        </div>
+      )}
+      {field.type === "list" && (
+        <div className={styles.fieldEditorFields}>
+          <label>
+            List Type:
+            <select
+              value={field.listType || ""}
+              onChange={(e) =>
+                setField((prev) => ({
+                  ...prev,
+                  listType: e.target.value as FieldDefinition["listType"],
+                }))
+              }
+            >
+              <option value="">Select type...</option>
+              {[
+                "string",
+                "number",
+                "boolean",
+                "object",
+                "relation",
+                "datetime",
+                "enum",
+              ].map((type) => (
+                <option key={type} value={type}>
+                  {type}
+                </option>
+              ))}
+            </select>
           </label>
         </div>
       )}
