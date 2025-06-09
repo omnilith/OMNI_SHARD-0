@@ -1,8 +1,99 @@
-import { Form, Entity } from "./types";
+import { Form, Entity, FieldDefinition } from "./types";
 
 type ValidationResult =
   | { valid: true; entity: Entity }
   | { valid: false; error: string };
+
+// --- Individual field validators ---
+function validateString(field: FieldDefinition, value: unknown): string | null {
+  return typeof value === "string"
+    ? null
+    : `Field "${field.name}" must be a string.`;
+}
+
+function validateNumber(field: FieldDefinition, value: unknown): string | null {
+  return typeof value === "number"
+    ? null
+    : `Field "${field.name}" must be a number.`;
+}
+
+function validateBoolean(
+  field: FieldDefinition,
+  value: unknown
+): string | null {
+  return typeof value === "boolean"
+    ? null
+    : `Field "${field.name}" must be a boolean.`;
+}
+
+function validateList(field: FieldDefinition, value: unknown): string | null {
+  return Array.isArray(value) ? null : `Field "${field.name}" must be a list.`;
+}
+
+function validateObject(field: FieldDefinition, value: unknown): string | null {
+  return typeof value === "object" && value !== null && !Array.isArray(value)
+    ? null
+    : `Field "${field.name}" must be an object.`;
+}
+
+function validateRelation(
+  field: FieldDefinition,
+  value: unknown
+): string | null {
+  if (field.relationMultiple) {
+    if (!Array.isArray(value) || value.some((v) => typeof v !== "string")) {
+      return `Field "${field.name}" must be an array of IDs (strings).`;
+    }
+  } else {
+    if (typeof value !== "string") {
+      return `Field "${field.name}" must be a string (ID).`;
+    }
+  }
+  return null;
+}
+
+function validateDatetime(
+  field: FieldDefinition,
+  value: unknown
+): string | null {
+  return typeof value === "string"
+    ? null
+    : `Field "${field.name}" must be a datetime string (ISO format).`;
+}
+
+function validateEnum(field: FieldDefinition, value: unknown): string | null {
+  if (field.enumMultiple) {
+    if (
+      !Array.isArray(value) ||
+      value.some(
+        (v) => typeof v !== "string" || !field.enumOptions?.includes(v)
+      )
+    ) {
+      return `Field "${
+        field.name
+      }" must be an array of allowed values: ${field.enumOptions?.join(", ")}.`;
+    }
+  } else {
+    if (typeof value !== "string" || !field.enumOptions?.includes(value)) {
+      return `Field "${field.name}" must be one of: ${field.enumOptions?.join(
+        ", "
+      )}.`;
+    }
+  }
+  return null;
+}
+
+// --- Map types to validators ---
+const typeValidators = {
+  string: validateString,
+  number: validateNumber,
+  boolean: validateBoolean,
+  list: validateList,
+  object: validateObject,
+  relation: validateRelation,
+  datetime: validateDatetime,
+  enum: validateEnum,
+};
 
 export function validateAndPrepareEntity(
   entity: Entity,
@@ -31,92 +122,11 @@ export function validateAndPrepareEntity(
 
     //If the field type does not match the input value type, return an error
     if (inputValue !== undefined && inputValue !== null) {
-      if (field.type === "string" && typeof inputValue !== "string") {
-        return {
-          valid: false,
-          error: `Field "${field.name}" must be a string.`,
-        };
-      } else if (field.type === "number" && typeof inputValue !== "number") {
-        return {
-          valid: false,
-          error: `Field "${field.name}" must be a number.`,
-        };
-      } else if (field.type === "boolean" && typeof inputValue !== "boolean") {
-        return {
-          valid: false,
-          error: `Field "${field.name}" must be a boolean.`,
-        };
-      } else if (field.type === "list" && !Array.isArray(inputValue)) {
-        return {
-          valid: false,
-          error: `Field "${field.name}" must be a list.`,
-        };
-      } else if (
-        field.type === "object" &&
-        (typeof inputValue !== "object" ||
-          Array.isArray(inputValue) ||
-          inputValue === null)
-      ) {
-        return {
-          valid: false,
-          error: `Field "${field.name}" must be an object.`,
-        };
-      } else if (field.type === "relation") {
-        // relationMultiple means value should be array, otherwise string (id)
-        if (field.relationMultiple) {
-          if (
-            !Array.isArray(inputValue) ||
-            inputValue.some((v) => typeof v !== "string")
-          ) {
-            return {
-              valid: false,
-              error: `Field "${field.name}" must be an array of IDs (strings).`,
-            };
-          }
-        } else {
-          if (typeof inputValue !== "string") {
-            return {
-              valid: false,
-              error: `Field "${field.name}" must be a string (ID).`,
-            };
-          }
-        }
-      } else if (field.type === "datetime") {
-        if (typeof inputValue !== "string") {
-          return {
-            valid: false,
-            error: `Field "${field.name}" must be a datetime string (ISO format).`,
-          };
-        }
-      } else if (field.type === "enum") {
-        if (field.enumMultiple) {
-          if (
-            !Array.isArray(inputValue) ||
-            inputValue.some(
-              (v) => typeof v !== "string" || !field.enumOptions?.includes(v)
-            )
-          ) {
-            return {
-              valid: false,
-              error: `Field "${
-                field.name
-              }" must be an array of allowed values: ${field.enumOptions?.join(
-                ", "
-              )}.`,
-            };
-          }
-        } else {
-          if (
-            typeof inputValue !== "string" ||
-            !field.enumOptions?.includes(inputValue)
-          ) {
-            return {
-              valid: false,
-              error: `Field "${
-                field.name
-              }" must be one of: ${field.enumOptions?.join(", ")}.`,
-            };
-          }
+      const validator = typeValidators[field.type];
+      if (validator) {
+        const error = validator(field, inputValue);
+        if (error) {
+          return { valid: false, error };
         }
       }
     }
