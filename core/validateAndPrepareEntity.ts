@@ -88,6 +88,36 @@ export function validateAndPrepareEntity(
             error: `Field "${field.name}" must be a datetime string (ISO format).`,
           };
         }
+      } else if (field.type === "enum") {
+        if (field.enumMultiple) {
+          if (
+            !Array.isArray(inputValue) ||
+            inputValue.some(
+              (v) => typeof v !== "string" || !field.enumOptions?.includes(v)
+            )
+          ) {
+            return {
+              valid: false,
+              error: `Field "${
+                field.name
+              }" must be an array of allowed values: ${field.enumOptions?.join(
+                ", "
+              )}.`,
+            };
+          }
+        } else {
+          if (
+            typeof inputValue !== "string" ||
+            !field.enumOptions?.includes(inputValue)
+          ) {
+            return {
+              valid: false,
+              error: `Field "${
+                field.name
+              }" must be one of: ${field.enumOptions?.join(", ")}.`,
+            };
+          }
+        }
       }
     }
   }

@@ -237,6 +237,49 @@ function GenericEntityEditor({ form, entity, type }: GenericEntityEditorProps) {
                 placeholder={field.description || "Select date and time"}
               />
             )}
+            {field.type === "enum" &&
+              field.enumOptions &&
+              (field.enumMultiple ? (
+                <select
+                  multiple
+                  value={Array.isArray(val) ? val : []}
+                  onChange={(e) => {
+                    const selected = Array.from(e.target.selectedOptions).map(
+                      (opt) => opt.value
+                    );
+                    handleChange(field, selected);
+                  }}
+                  required={field.required}
+                >
+                  <option value="" disabled>
+                    {field.enumOptions.length === 0
+                      ? "No options available"
+                      : "Select options"}
+                  </option>
+                  {field.enumOptions.map((opt) => (
+                    <option key={opt} value={opt}>
+                      {opt}
+                    </option>
+                  ))}
+                </select>
+              ) : (
+                <select
+                  value={typeof val === "string" ? val : ""}
+                  onChange={(e) => handleChange(field, e.target.value)}
+                  required={field.required}
+                >
+                  <option value="">
+                    {field.enumOptions.length === 0
+                      ? "No options available"
+                      : "Select option"}
+                  </option>
+                  {field.enumOptions.map((opt) => (
+                    <option key={opt} value={opt}>
+                      {opt}
+                    </option>
+                  ))}
+                </select>
+              ))}
             {field.description && (
               <span style={{ color: "#888", fontSize: "0.97em" }}>
                 {field.description}
