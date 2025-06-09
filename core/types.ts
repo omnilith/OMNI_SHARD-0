@@ -1,10 +1,32 @@
 export type FieldDefinition = {
   name: string;
   label: string;
-  type: "string" | "number" | "boolean" | "list" | "object";
+  type:
+    | "string"
+    | "number"
+    | "boolean"
+    | "list"
+    | "object"
+    | "relation"
+    | "datetime"
+    | "enum"; // <-- add enum
   required?: boolean;
   description?: string;
-  listType?: "string" | "number" | "boolean" | "object";
+  listType?:
+    | "string"
+    | "number"
+    | "boolean"
+    | "object"
+    | "relation"
+    | "datetime"
+    | "enum"; // <-- add enum
+  // For enum type:
+  enumOptions?: string[]; // allowed values
+  enumMultiple?: boolean; // allow multiple selection
+  // For relation type:
+  relationType?: string; // The entity type this field relates to (e.g., "User", "Form", etc.)
+  relationLabelField?: string; // Optional: which field to use as the display label for the related entity
+  relationMultiple?: boolean; // Optional: allow multiple relations (like a list)
 };
 
 export type Entity = {

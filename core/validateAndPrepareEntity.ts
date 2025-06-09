@@ -51,11 +51,73 @@ export function validateAndPrepareEntity(
           valid: false,
           error: `Field "${field.name}" must be a list.`,
         };
-      } else if (field.type === "object" && typeof inputValue !== "object") {
+      } else if (
+        field.type === "object" &&
+        (typeof inputValue !== "object" ||
+          Array.isArray(inputValue) ||
+          inputValue === null)
+      ) {
         return {
           valid: false,
           error: `Field "${field.name}" must be an object.`,
         };
+      } else if (field.type === "relation") {
+        // relationMultiple means value should be array, otherwise string (id)
+        if (field.relationMultiple) {
+          if (
+            !Array.isArray(inputValue) ||
+            inputValue.some((v) => typeof v !== "string")
+          ) {
+            return {
+              valid: false,
+              error: `Field "${field.name}" must be an array of IDs (strings).`,
+            };
+          }
+        } else {
+          if (typeof inputValue !== "string") {
+            return {
+              valid: false,
+              error: `Field "${field.name}" must be a string (ID).`,
+            };
+          }
+        }
+      } else if (field.type === "datetime") {
+        if (typeof inputValue !== "string") {
+          return {
+            valid: false,
+            error: `Field "${field.name}" must be a datetime string (ISO format).`,
+          };
+        }
+      } else if (field.type === "enum") {
+        if (field.enumMultiple) {
+          if (
+            !Array.isArray(inputValue) ||
+            inputValue.some(
+              (v) => typeof v !== "string" || !field.enumOptions?.includes(v)
+            )
+          ) {
+            return {
+              valid: false,
+              error: `Field "${
+                field.name
+              }" must be an array of allowed values: ${field.enumOptions?.join(
+                ", "
+              )}.`,
+            };
+          }
+        } else {
+          if (
+            typeof inputValue !== "string" ||
+            !field.enumOptions?.includes(inputValue)
+          ) {
+            return {
+              valid: false,
+              error: `Field "${
+                field.name
+              }" must be one of: ${field.enumOptions?.join(", ")}.`,
+            };
+          }
+        }
       }
     }
   }
