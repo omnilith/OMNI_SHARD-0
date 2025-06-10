@@ -95,21 +95,15 @@ const typeValidators = {
   enum: validateEnum,
 };
 
-export function validateAndPrepareEntity(
+export function validateEntity(
   entity: Entity,
   form: Form
-): ValidationResult {
-  //If the submitted entity is not an object or is null, throw an error
+): { valid: true } | { valid: false; error: string } {
   if (typeof entity !== "object" || entity === null) {
     throw new Error("Entity must be a non-null object");
   }
-
-  //Loop through the form properties to validate the entity
   for (const field of form.properties) {
-    //Get input value for the current field from the form
     const inputValue = entity[field.name];
-
-    //If that field is required and not provided, return an error
     if (
       field.required &&
       (inputValue === undefined || inputValue === null || inputValue === "")
@@ -119,8 +113,6 @@ export function validateAndPrepareEntity(
         error: `Field "${field.name}" is required but not provided.`,
       };
     }
-
-    //If the field type does not match the input value type, return an error
     if (inputValue !== undefined && inputValue !== null) {
       const validator = typeValidators[field.type];
       if (validator) {
@@ -131,6 +123,22 @@ export function validateAndPrepareEntity(
       }
     }
   }
+  return { valid: true };
+}
 
-  return { valid: true, entity: entity as Entity };
+export function prepareEntity(entity: Entity): Entity {
+  // _form is unused for now; this is intentional for future extension
+  return entity;
+}
+
+export function validateAndPrepareEntity(
+  entity: Entity,
+  form: Form
+): ValidationResult {
+  const validation = validateEntity(entity, form);
+  if (!validation.valid) {
+    return { valid: false, error: validation.error };
+  }
+  const prepared = prepareEntity(entity);
+  return { valid: true, entity: prepared };
 }
